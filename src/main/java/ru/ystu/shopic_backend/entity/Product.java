@@ -21,5 +21,7 @@ public class Product {
     private String name;
     private String type;
     private Double price;
+
+    @Column(name = "img_crc", nullable = true)
     private String imgSrc;
 }
