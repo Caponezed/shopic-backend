@@ -32,4 +32,10 @@ public class ProductController {
         List<ProductDto> dtoProducts = productService.getAllProducts();
         return ResponseEntity.ok(dtoProducts);
     }
+
+    @PutMapping
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto updatedProduct) {
+       ProductDto product = productService.updateProductById(updatedProduct);
+        return ResponseEntity.ok(product);
+    }
 }

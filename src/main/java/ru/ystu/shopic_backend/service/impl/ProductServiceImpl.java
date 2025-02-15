@@ -40,4 +40,20 @@ public class ProductServiceImpl implements ProductService {
                 .map(ProductMapper::mapToProductDto)
                 .toList();
     }
+
+    @Override
+    public ProductDto updateProductById(ProductDto updatedDtoProduct) {
+        Long productId = updatedDtoProduct.getId();
+        Product updatableProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
+
+        updatableProduct.setName(updatedDtoProduct.getName());
+        updatableProduct.setType(updatedDtoProduct.getType());
+        updatableProduct.setPrice(updatedDtoProduct.getPrice());
+        updatableProduct.setImgSrc(updatedDtoProduct.getImgSrc());
+
+        Product updatedProduct = productRepository.save(updatableProduct);
+
+        return ProductMapper.mapToProductDto(updatedProduct);
+    }
 }
