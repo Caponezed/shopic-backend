@@ -17,7 +17,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String type;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "type_id", referencedColumnName = "type_id")
+    private ProductType productType;
+
     private String description;
     private Double price;
 

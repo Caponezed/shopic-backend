@@ -1,13 +1,13 @@
 package ru.ystu.shopic_backend.service;
 
-import ru.ystu.shopic_backend.dto.ProductDto;
+import ru.ystu.shopic_backend.entity.Product;
 
 import java.util.List;
 
 public interface ProductService {
-    ProductDto createProduct(ProductDto productDto);
-    ProductDto getProductById(Long productId);
-    List<ProductDto> getAllProducts();
-    ProductDto updateProductById(ProductDto dtoProduct);
+    Product createProduct(Product productDto);
+    Product getProductById(Long productId);
+    List<Product> getAllProducts();
+    Product updateProduct(Product dtoProduct);
     void deleteProductById(Long productId);
 }

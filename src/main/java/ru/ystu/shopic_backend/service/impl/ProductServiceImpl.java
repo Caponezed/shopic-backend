@@ -1,12 +1,14 @@
 package ru.ystu.shopic_backend.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.ystu.shopic_backend.dto.ProductDto;
 import ru.ystu.shopic_backend.entity.Product;
+import ru.ystu.shopic_backend.entity.ProductType;
 import ru.ystu.shopic_backend.exception.ResourceNotFoundException;
-import ru.ystu.shopic_backend.mapper.ProductMapper;
 import ru.ystu.shopic_backend.repository.ProductRepository;
+import ru.ystu.shopic_backend.repository.ProductTypeRepository;
 import ru.ystu.shopic_backend.service.ProductService;
 
 import java.util.List;
@@ -15,52 +17,59 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
+    @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ProductTypeRepository productTypeRepository;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
-        Product product = ProductMapper.mapToProduct(productDto);
-        Product savedProduct = productRepository.save(product);
-        return ProductMapper.mapToProductDto(savedProduct);
+    @Transactional
+    public Product createProduct(Product newProduct) {
+        ProductType productType = newProduct.getProductType();
+
+        if (productType != null && productType.getId() == null) {
+            ProductType existingType = productTypeRepository.findByName(productType.getName())
+                    .orElse(null);
+
+            if (existingType != null) {
+                newProduct.setProductType(existingType);
+            } else {
+                productTypeRepository.save(productType);
+            }
+        }
+
+        // Сохраняем продукт
+        return productRepository.save(newProduct);
     }
 
     @Override
-    public ProductDto getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
-
-        return ProductMapper.mapToProductDto(product);
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(ProductMapper::mapToProductDto)
-                .toList();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
-    @Override
-    public ProductDto updateProductById(ProductDto updatedDtoProduct) {
-        Long productId = updatedDtoProduct.getId();
+    public Product updateProduct(Product updatedProduct) {
+        Long productId = updatedProduct.getId();
         Product updatableProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
 
-        updatableProduct.setName(updatedDtoProduct.getName());
-        updatableProduct.setDescription(updatedDtoProduct.getDescription());
-        updatableProduct.setType(updatedDtoProduct.getType());
-        updatableProduct.setPrice(updatedDtoProduct.getPrice());
-        updatableProduct.setImgSrc(updatedDtoProduct.getImgSrc());
+        updatableProduct.setName(updatedProduct.getName());
+        updatableProduct.setDescription(updatedProduct.getDescription());
+        updatableProduct.setProductType(updatedProduct.getProductType());
+        updatableProduct.setPrice(updatedProduct.getPrice());
+        updatableProduct.setImgSrc(updatedProduct.getImgSrc());
 
-        Product updatedProduct = productRepository.save(updatableProduct);
-
-        return ProductMapper.mapToProductDto(updatedProduct);
+        return productRepository.save(updatableProduct);
     }
 
     @Override
     public void deleteProductById(Long productId) {
-        Product updatableProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
+        productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
         productRepository.deleteById(productId);
     }
 }
