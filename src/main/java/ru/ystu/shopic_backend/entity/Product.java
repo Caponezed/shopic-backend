@@ -24,6 +24,7 @@ public class Product {
 
     private String description;
     private Double price;
+    private Integer totalQuantity;
 
     @Column(name = "img_src", nullable = true)
     private String imgSrc;
