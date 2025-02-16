@@ -10,7 +10,6 @@ import ru.ystu.shopic_backend.repository.ProductRepository;
 import ru.ystu.shopic_backend.service.ProductService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
 
         updatableProduct.setName(updatedDtoProduct.getName());
+        updatableProduct.setDescription(updatedDtoProduct.getDescription());
         updatableProduct.setType(updatedDtoProduct.getType());
         updatableProduct.setPrice(updatedDtoProduct.getPrice());
         updatableProduct.setImgSrc(updatedDtoProduct.getImgSrc());

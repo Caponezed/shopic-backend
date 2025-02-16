@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +18,7 @@ public class Product {
     private Long id;
     private String name;
     private String type;
+    private String description;
     private Double price;
 
     @Column(name = "img_src", nullable = true)

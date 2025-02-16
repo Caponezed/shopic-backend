@@ -9,6 +9,7 @@ public class ProductMapper {
                 product.getId(),
                 product.getName(),
                 product.getType(),
+                product.getDescription(),
                 product.getPrice(),
                 product.getImgSrc()
         );
@@ -19,6 +20,7 @@ public class ProductMapper {
                 productDto.getId(),
                 productDto.getName(),
                 productDto.getType(),
+                productDto.getDescription(),
                 productDto.getPrice(),
                 productDto.getImgSrc()
         );
