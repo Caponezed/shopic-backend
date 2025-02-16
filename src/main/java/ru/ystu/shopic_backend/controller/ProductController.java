@@ -40,8 +40,7 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId) {
+    public void deleteProduct(@PathVariable("id") Long productId) {
         productService.deleteProductById(productId);
-        return ResponseEntity.ok("Товар с id: " + productId + " был успешно удалён");
     }
 }
