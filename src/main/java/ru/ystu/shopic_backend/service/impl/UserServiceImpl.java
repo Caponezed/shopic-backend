@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ystu.shopic_backend.entity.Role;
 import ru.ystu.shopic_backend.entity.User;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -41,10 +44,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addNewUser(User user) {
+    public User register(User user) {
         if (userRepository.findUserByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("User already exists with email: " + user.getEmail());
+            throw new RuntimeException("Пользователь с email: " + user.getEmail() + " уже существует");
         }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         var processedRoles = processUserRoles(user.getRoles());
         user.setRoles(processedRoles);

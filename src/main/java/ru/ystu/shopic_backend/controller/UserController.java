@@ -21,10 +21,16 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping
-    public ResponseEntity<User> addNewUser(@RequestBody User user) {
-        var savedUser = userService.addNewUser(user);
-        return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
+    @PostMapping("register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        var newUser = userService.register(user);
+        return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("login")
+    public String login(@RequestBody User user) {
+        System.out.println(user);
+        return "Success";
     }
 
     @PutMapping
