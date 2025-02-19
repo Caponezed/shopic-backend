@@ -7,6 +7,9 @@ public interface UserService {
     User getUserById(Long userId);
     List<User> getAllUsers();
     User register(User user);
+
+    String verify(User user);
+
     User updateUser(User user);
     void deleteUserById(Long userId);
 }

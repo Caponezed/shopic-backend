@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ystu.shopic_backend.entity.Role;
@@ -12,6 +15,7 @@ import ru.ystu.shopic_backend.entity.User;
 import ru.ystu.shopic_backend.exception.ResourceNotFoundException;
 import ru.ystu.shopic_backend.repository.RoleRepository;
 import ru.ystu.shopic_backend.repository.UserRepository;
+import ru.ystu.shopic_backend.service.JWTService;
 import ru.ystu.shopic_backend.service.UserService;
 
 import java.util.ArrayList;
@@ -26,11 +30,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RoleRepository roleRepository;
-
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JWTService jwtService;
 
     @Override
     public User getUserById(Long userId) {
@@ -55,6 +63,15 @@ public class UserServiceImpl implements UserService {
         user.setRoles(processedRoles);
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public String verify(User user) {
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+        if (auth.isAuthenticated()) return jwtService.generateJWToken(user);
+        return "";
     }
 
     @Override
