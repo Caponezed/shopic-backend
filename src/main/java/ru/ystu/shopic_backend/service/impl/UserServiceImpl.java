@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         var processedRoles = processUserRoles(user.getRoles());
         updatableUser.setRoles(processedRoles);
 
-        updatableUser.setPassword(user.getPassword()); // Подумать
+        updatableUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(updatableUser);
     }
