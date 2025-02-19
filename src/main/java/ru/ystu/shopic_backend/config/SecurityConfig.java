@@ -65,7 +65,7 @@ public class SecurityConfig {
          DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
          provider.setPasswordEncoder(new BCryptPasswordEncoder(12)); // 2 в 12 степени
          provider.setUserDetailsService(userDetailsService);
-         return  provider;
+         return provider;
     }
 
     @Bean
