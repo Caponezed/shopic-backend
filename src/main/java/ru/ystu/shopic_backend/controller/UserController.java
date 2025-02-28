@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ystu.shopic_backend.dto.LoginResponseDto;
 import ru.ystu.shopic_backend.entity.User;
 import ru.ystu.shopic_backend.service.UserService;
 
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public String login(@RequestBody User user) {
+    public LoginResponseDto login(@RequestBody User user) {
         return userService.verify(user);
     }
 

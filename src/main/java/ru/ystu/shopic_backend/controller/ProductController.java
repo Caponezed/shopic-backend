@@ -3,6 +3,7 @@ package ru.ystu.shopic_backend.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ystu.shopic_backend.entity.Product;
 import ru.ystu.shopic_backend.service.ProductService;
@@ -36,6 +37,12 @@ public class ProductController {
     @PutMapping
     public ResponseEntity<Product> updateProduct(@RequestBody Product updatedProduct) {
        Product product = productService.updateProduct(updatedProduct);
+        return ResponseEntity.ok(product);
+    }
+
+    @PutMapping("/confirmOrder")
+    public ResponseEntity<Product> confirmOrder(@RequestBody Product updatedProduct) {
+        Product product = productService.confirmOrder(updatedProduct);
         return ResponseEntity.ok(product);
     }
 

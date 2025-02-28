@@ -4,7 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ru.ystu.shopic_backend.entity.User;
 import ru.ystu.shopic_backend.service.JWTService;
@@ -17,9 +19,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JWTServiceImpl implements JWTService {
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private String secretKey = "";
 
@@ -31,6 +37,8 @@ public class JWTServiceImpl implements JWTService {
 
     public String generateJWToken(User user) {
         Map<String, Object> claims = new HashMap<String, Object>();
+        var authorities = userDetailsService.loadUserByUsername(user.getEmail()).getAuthorities();
+        claims.put("roles", authorities);
 
         var now = new Date(System.currentTimeMillis());
         // TODO: increase jwt lifetime later

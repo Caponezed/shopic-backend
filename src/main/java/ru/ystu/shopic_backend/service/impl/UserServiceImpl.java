@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.ystu.shopic_backend.dto.LoginResponseDto;
 import ru.ystu.shopic_backend.entity.Role;
 import ru.ystu.shopic_backend.entity.User;
 import ru.ystu.shopic_backend.exception.ResourceNotFoundException;
@@ -66,12 +67,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String verify(User user) {
+    public LoginResponseDto verify(User user) {
         Authentication auth = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        var loginResponseDto = new LoginResponseDto();
+        if (!auth.isAuthenticated()) return loginResponseDto;
 
-        if (auth.isAuthenticated()) return jwtService.generateJWToken(user);
-        return "";
+        var existingUser = userRepository.findUserByEmail(user.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с email: " + user.getEmail()));
+        var jwtToken = jwtService.generateJWToken(user);
+
+        loginResponseDto.setJwtToken(jwtToken);
+        loginResponseDto.setUser(existingUser);
+
+        return loginResponseDto;
     }
 
     @Override

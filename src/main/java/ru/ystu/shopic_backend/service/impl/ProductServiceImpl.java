@@ -62,7 +62,18 @@ public class ProductServiceImpl implements ProductService {
         updatableProduct.setDescription(updatedProduct.getDescription());
         updatableProduct.setProductType(updatedProduct.getProductType());
         updatableProduct.setPrice(updatedProduct.getPrice());
+        updatableProduct.setTotalQuantity(updatedProduct.getTotalQuantity());
         updatableProduct.setImgSrc(updatedProduct.getImgSrc());
+
+        return productRepository.save(updatableProduct);
+    }
+
+    public Product confirmOrder(Product confirmedProduct) {
+        Long productId = confirmedProduct.getId();
+        Product updatableProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Товар не найден с id: " + productId));
+
+        updatableProduct.setTotalQuantity(confirmedProduct.getTotalQuantity());
 
         return productRepository.save(updatableProduct);
     }
