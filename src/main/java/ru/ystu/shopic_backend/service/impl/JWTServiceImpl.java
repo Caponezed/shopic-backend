@@ -42,7 +42,7 @@ public class JWTServiceImpl implements JWTService {
 
         var now = new Date(System.currentTimeMillis());
         // TODO: increase jwt lifetime later
-        var jwtDeathDate = new Date(System.currentTimeMillis() + 1000 * 60 * 10); // 10 min
+        var jwtDeathDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 60 min
 
             return Jwts.builder()
                     .claims()
